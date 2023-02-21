@@ -1,0 +1,39 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'recipes/style.css' %}">
+
+<a href="{% url 'recipes:index' %}"><- Back</a>
+<h1>{{ recipe.name }}</h1>
+<div id="wrapper">
+  <div id="div1">
+    <ul>
+      {% for ingredient in recipe.measurement_set.all %}
+        <li><strong>{{ ingredient.quantity }} {{ ingredient.unit }}</strong> {{ ingredient.ingredient.name }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div id="div2">
+    <!-- FIX FLAW 1: commented out, also changes needed in views.py -->
+    <form action="{% url 'recipes:add_ingredient' recipe.id %}" method="GET"> <!-- Replace method="GET" with method="POST" -->
+      <!-- add {% csrf_token %} -->
+      <label for="name">Add ingredient</label><br/>
+      <input type="text" name="name"><br/>
+      <label for="quantity">Quantity</label><br/>
+      <input type="text" name="quantity"><br/>
+      <label for="unit">Unit</label><br/>
+      <input type="text" name="unit"><br/>
+      <input type="submit" value="Submit">
+    </form>
+    {% if error_message %}
+      <p><strong>{{ error_message }}</strong></p>
+    {% endif %}
+  </div>
+</div>
+
+<p>{{ recipe.instructions }}</p>
+
+<form action="{% url 'recipes:add_instructions' recipe.id %}" method="post">
+  {% csrf_token %}
+  <label for="instructions">Instructions</label><br/>
+  <textarea name="instructions" rows="5" cols="40"></textarea><br/>
+  <input type="submit" value="Submit">
+</form>

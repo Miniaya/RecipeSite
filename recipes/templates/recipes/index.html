@@ -1,0 +1,20 @@
+<form action="{% url 'recipes:search' %}" method="get">
+    <label for="name">Search</label><br/>
+    <input type="text" name="keyword"><br/>
+    <input type="submit" value="Search">
+</form>
+{% if recipe_list %}
+    <ul>
+    {% for recipe in recipe_list %}
+        <li><a href="{% url 'recipes:recipe' recipe.id %}">{{ recipe.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No recipes are available.</p>
+{% endif %}
+<form action="{% url 'recipes:new' %}" method="post">
+    {% csrf_token %}
+    <label for="name">Add recipe</label><br/>
+    <input type="text" name="name"><br/>
+    <input type="submit" value="Submit">
+</form>
