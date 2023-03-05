@@ -12,15 +12,15 @@ def index(request):
   recipes = Recipe.objects.filter(user=user)
   return render(request, 'recipes/index.html', {'recipe_list': recipes})
 
-@login_required
+# FIX FLAW 2: add login_required annotation and replace recipe with outcommented line
+# @login_required
 def recipe(request, recipe_id):
-  # FIX FLAW 2: Replace recipe with
   # recipe = get_object_or_404(Recipe, pk=recipe_id, user=User.objects.get(username=request.user))
   recipe = get_object_or_404(Recipe, pk=recipe_id)
   return render(request, 'recipes/recipe.html', {'recipe': recipe})
 
-@login_required
 # FIX FLAW 1: fixes are commented out, also two changes needed in recipe.html
+@login_required
 def add_ingredient(request, recipe_id):
   recipe = get_object_or_404(Recipe, pk=recipe_id)
   try:
@@ -61,13 +61,12 @@ def new(request):
 @login_required
 def search(request):
   user = User.objects.get(username=request.user)
-  #FIX FLAW 3: replace lines 66-72 with
+  #FIX FLAW 3: replace lines 66-71 with
   # recipes = Recipe.objects.filter(user=user, name__icontains=request.GET['keyword'])
   connection = sqlite3.connect('recipes.db')
   cursor = connection.cursor()
   response = cursor.execute("SELECT * FROM recipes_recipe WHERE user_id='%s' and name LIKE '%%%s%%'" % (user.id, request.GET['keyword'])).fetchall()
   recipes = []
-  print(response)
   for recipe in response:
     recipes.append({'id': recipe[0], 'name': recipe[1]})
   return render(request, 'recipes/index.html', {'recipe_list': recipes})
